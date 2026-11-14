@@ -376,41 +376,62 @@
     ></div>
 
     <!-- CART SIDEBAR -->
+    <!-- CART SIDEBAR -->
     <aside
       id="cart-sidebar"
-      class="cart-sidebar fixed top-0 right-0 h-full w-full sm:w-[420px] bg-white shadow-2xl z-50 translate-x-full flex flex-col"
+      class="cart-sidebar fixed top-0 right-0 h-full w-full sm:w-[440px] bg-[#fdf3ec] shadow-2xl z-50 translate-x-full overflow-y-auto"
     >
-      <div class="p-6 border-b flex justify-between items-center">
-        <h2 class="text-2xl font-bold">Your Cart</h2>
+      <div class="px-5 pt-6 pb-10">
+        <div class="flex items-start justify-between">
+          <div>
+            <span class="heading-font italic text-3xl font-bold text-[#0f1b4d]"
+              >Tasty Haven</span
+            >
+            <div class="h-1 w-4/5 bg-orange-600 rounded-full -mt-1"></div>
+          </div>
 
-        <button
-          onclick="toggleCart()"
-          class="text-3xl text-gray-500"
-          aria-label="Close cart"
-        >
-          &times;
-        </button>
-      </div>
-
-      <div id="cart-items" class="p-6 flex-1 overflow-y-auto"></div>
-
-      <div class="p-6 border-t">
-        <div class="flex justify-between text-lg font-bold mb-5">
-          <span>Total</span>
-          <span id="cart-total" class="text-orange-600">₦0</span>
+          <button
+            onclick="toggleCart()"
+            class="text-4xl leading-none text-[#0f1b4d]"
+            aria-label="Close cart"
+          >
+            &times;
+          </button>
         </div>
 
-        <button
-          onclick="sendOrderToWhatsApp()"
-          class="w-full bg-green-500 hover:bg-green-600 text-white py-4 rounded-xl font-bold"
-        >
-          <i class="fab fa-whatsapp mr-2"></i>
-          ORDER VIA WHATSAPP
-        </button>
+        <h2 class="text-3xl font-extrabold text-[#0f1b4d] mt-6">Your Cart</h2>
+        <p id="cart-subtitle" class="text-gray-500 mt-1">0 items</p>
 
-        <button onclick="clearCart()" class="w-full text-red-500 py-3 mt-2">
-          Clear Cart
-        </button>
+        <div id="cart-items" class="mt-4"></div>
+
+        <div
+          id="cart-footer"
+          class="bg-white rounded-2xl shadow-sm p-5 mt-4 hidden"
+        >
+          <div class="flex justify-between items-center mb-4">
+            <span class="text-2xl font-extrabold text-[#0f1b4d]">Total</span>
+            <span
+              id="cart-total"
+              class="text-2xl font-extrabold text-orange-600"
+              >₦0</span
+            >
+          </div>
+
+          <button
+            onclick="sendOrderToWhatsApp()"
+            class="w-full bg-green-800 hover:bg-green-900 text-white py-4 rounded-xl font-bold text-lg flex items-center justify-center gap-3"
+          >
+            <i class="fab fa-whatsapp text-2xl"></i>
+            Order via WhatsApp
+          </button>
+
+          <button
+            onclick="toggleCart()"
+            class="block mx-auto mt-4 text-orange-600 underline font-medium"
+          >
+            Continue shopping
+          </button>
+        </div>
       </div>
     </aside>
 
@@ -656,20 +677,27 @@
       }
 
       // Render cart
+      // Render cart
       function renderCart() {
         const container = document.getElementById("cart-items");
+        const footer = document.getElementById("cart-footer");
+        const subtitle = document.getElementById("cart-subtitle");
+
+        const count = cart.reduce((sum, item) => sum + item.quantity, 0);
+        subtitle.textContent = count + (count === 1 ? " item" : " items");
 
         if (cart.length === 0) {
+          footer.classList.add("hidden");
+
           container.innerHTML = `
-            <div class="text-center py-20 text-gray-400">
+            <div class="bg-white rounded-2xl p-10 text-center text-gray-400">
               <i class="fas fa-shopping-cart text-5xl mb-5"></i>
               <p class="text-lg">Your cart is empty.</p>
-
               <button
                 onclick="toggleCart()"
-                class="text-orange-600 mt-4 font-semibold"
+                class="text-orange-600 underline mt-4 font-semibold"
               >
-                Continue Shopping
+                Continue shopping
               </button>
             </div>
           `;
@@ -678,46 +706,46 @@
           return;
         }
 
-        container.innerHTML = cart
-          .map(
-            (item, index) => `
-              <div class="flex gap-4 border-b pb-5 mb-5">
+        footer.classList.remove("hidden");
 
+        container.innerHTML =
+          `<div class="bg-white rounded-2xl shadow-sm px-4">` +
+          cart
+            .map(
+              (item, index) => `
+              <div class="flex gap-3 py-4 ${index > 0 ? "border-t border-gray-200" : ""}">
                 <img
                   src="${item.img}"
                   alt="${item.name}"
-                  class="w-20 h-20 object-cover rounded-xl"
+                  class="w-20 h-20 object-cover rounded-xl shrink-0"
                 >
 
                 <div class="flex-1 min-w-0">
                   <div class="flex justify-between gap-2">
-                    <h4 class="font-semibold">${item.name}</h4>
-
-                    <span class="font-bold text-orange-600 whitespace-nowrap">
+                    <h4 class="font-bold text-[#0f1b4d] leading-snug">${item.name}</h4>
+                    <span class="font-extrabold text-orange-600 whitespace-nowrap">
                       ${money(item.price * item.quantity)}
                     </span>
                   </div>
 
-                  <p class="text-xs text-gray-500 mt-1">
-                    ${money(item.price)} each
-                  </p>
+                  <div class="flex items-center justify-between mt-2">
+                    <div class="flex items-center gap-3">
+                      <button
+                        onclick="changeQuantity(${index}, -1)"
+                        class="w-10 h-10 rounded-full border border-gray-300 text-lg text-[#0f1b4d]"
+                      >−</button>
 
-                  <div class="flex items-center gap-3 mt-3">
-                    <button
-                      onclick="changeQuantity(${index}, -1)"
-                      class="border rounded-full w-8 h-8"
-                    >-</button>
+                      <span class="font-bold text-[#0f1b4d] w-4 text-center">${item.quantity}</span>
 
-                    <span class="font-semibold">${item.quantity}</span>
-
-                    <button
-                      onclick="changeQuantity(${index}, 1)"
-                      class="border rounded-full w-8 h-8"
-                    >+</button>
+                      <button
+                        onclick="changeQuantity(${index}, 1)"
+                        class="w-10 h-10 rounded-full border border-gray-300 text-lg text-[#0f1b4d]"
+                      >+</button>
+                    </div>
 
                     <button
                       onclick="removeFromCart(${index})"
-                      class="text-red-500 text-sm ml-auto"
+                      class="text-orange-600 text-sm"
                     >
                       Remove
                     </button>
@@ -725,8 +753,9 @@
                 </div>
               </div>
             `,
-          )
-          .join("");
+            )
+            .join("") +
+          `</div>`;
 
         const total = cart.reduce(
           (sum, item) => sum + item.price * item.quantity,
