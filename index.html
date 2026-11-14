@@ -1,0 +1,973 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Enjoy authentic Nigerian Jollof Rice, Egusi Soup, Suya, Pepper Soup and more at Tasty Haven Restaurant in Lagos."
+    />
+    <title>Tasty Haven Restaurant | Nigerian Delights</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://images.unsplash.com" />
+
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;500;600;700&display=swap");
+
+      body {
+        font-family: "Inter", sans-serif;
+        scroll-behavior: smooth;
+      }
+
+      .heading-font {
+        font-family: "Playfair Display", serif;
+      }
+
+      html {
+        overflow-x: hidden;
+      }
+
+      .hero-bg {
+        background:
+          linear-gradient(rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.65)),
+          url("https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=2000&q=85")
+            center/cover;
+      }
+
+      .food-card {
+        transition: 0.7s ease-in-out;
+      }
+
+      .food-card:hover {
+        transform: translateY(-7px);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
+      }
+
+      .cart-sidebar {
+        transition: transform 0.7s ease-in-out;
+      }
+
+      .toast {
+        animation: slideIn 0.3s ease;
+      }
+
+      @keyframes slideIn {
+        from {
+          opacity: 0;
+          transform: translate(-50%, 20px);
+        }
+        to {
+          opacity: 1;
+          transform: translate(-50%, 0);
+        }
+      }
+
+      /* MOBILE MENU (hamburger) */
+      #mobile-menu {
+        max-height: 0;
+        opacity: 0;
+        overflow: hidden;
+        visibility: hidden;
+        transition:
+          max-height 0.4s ease-in-out,
+          opacity 0.4s ease-in-out,
+          visibility 0s linear 0.4s;
+      }
+
+      #mobile-menu.menu-open {
+        max-height: 400px;
+        opacity: 1;
+        visibility: visible;
+        border-top: 1px solid #f3f4f6;
+        box-shadow: 0 12px 20px rgba(0, 0, 0, 0.1);
+        transition:
+          max-height 0.4s ease-in-out,
+          opacity 0.4s ease-in-out,
+          visibility 0s;
+      }
+
+      #menu-toggle {
+        -webkit-tap-highlight-color: transparent;
+        touch-action: manipulation;
+      }
+
+      body.cart-open {
+        overflow: hidden;
+      }
+
+      .food-image {
+        cursor: zoom-in;
+      }
+
+      #image-modal {
+        backdrop-filter: blur(5px);
+      }
+
+      #preview-image {
+        max-height: 85vh;
+      }
+    </style>
+  </head>
+
+  <body class="bg-gray-50 text-gray-800">
+    <!-- NAVBAR -->
+    <!-- NAVBAR -->
+    <nav class="bg-white shadow-md sticky top-0 z-40">
+      <div
+        class="max-w-7xl mx-auto px-4 py-3 sm:px-5 sm:py-4 flex justify-between items-center gap-2"
+      >
+        <a href="#home" class="flex items-center gap-2 sm:gap-3 min-w-0">
+          <div
+            class="w-10 h-10 sm:w-11 sm:h-11 shrink-0 bg-orange-500 rounded-full flex items-center justify-center text-white text-xl sm:text-2xl"
+          >
+            <i class="fas fa-utensils"></i>
+          </div>
+
+          <span
+            class="heading-font text-xl sm:text-2xl font-bold text-orange-600 whitespace-nowrap"
+          >
+            Tasty Haven
+          </span>
+        </a>
+
+        <div class="hidden md:flex items-center gap-8 font-medium text-sm">
+          <a href="#home" class="hover:text-orange-600">Home</a>
+          <a href="#menu" class="hover:text-orange-600">Menu</a>
+          <a href="#gallery" class="hover:text-orange-600">Gallery</a>
+          <a href="#about" class="hover:text-orange-600">About</a>
+          <a href="#contact" class="hover:text-orange-600">Contact</a>
+        </div>
+
+        <div class="flex items-center gap-2 sm:gap-3 shrink-0">
+          <button
+            onclick="toggleCart()"
+            class="bg-orange-500 hover:bg-orange-600 text-white px-3 py-2.5 sm:px-4 sm:py-3 rounded-xl flex items-center gap-2"
+          >
+            <i class="fas fa-shopping-cart"></i>
+
+            <span
+              id="cart-count"
+              class="bg-white text-orange-600 text-xs rounded-full w-5 h-5 flex items-center justify-center"
+              >0</span
+            >
+          </button>
+
+          <a
+            href="#menu"
+            class="hidden sm:block bg-black text-white px-5 py-3 rounded-xl hover:bg-gray-800"
+          >
+            Order Now
+          </a>
+
+          <button
+            id="menu-toggle"
+            type="button"
+            class="block md:hidden shrink-0 text-2xl px-2 py-1 text-gray-800 cursor-pointer"
+            aria-label="Open navigation"
+            aria-expanded="false"
+            aria-controls="mobile-menu"
+          >
+            <i class="fas fa-bars"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- MOBILE MENU -->
+      <div id="mobile-menu" class="md:hidden bg-white px-6">
+        <div class="flex flex-col gap-4 py-5 font-medium">
+          <a href="#home">Home</a>
+          <a href="#menu">Menu</a>
+          <a href="#gallery">Gallery</a>
+          <a href="#about">About</a>
+          <a href="#contact">Contact</a>
+        </div>
+      </div>
+    </nav>
+
+    <!-- HERO -->
+    <section
+      id="home"
+      class="hero-bg min-h-[650px] md:h-[85vh] flex items-center text-white py-20"
+    >
+      <div class="max-w-7xl mx-auto px-6 w-full">
+        <div class="max-w-2xl">
+          <span class="text-orange-400 font-semibold tracking-widest uppercase">
+            Welcome to Tasty Haven
+          </span>
+
+          <h1
+            class="heading-font text-5xl md:text-7xl font-bold leading-tight mt-5 mb-6"
+          >
+            Authentic Nigerian Flavors Delivered to Your Door
+          </h1>
+
+          <p class="text-lg md:text-xl text-orange-100 mb-8">
+            Enjoy freshly prepared Jollof Rice, Pepper Soup, Suya and other
+            delicious Nigerian meals.
+          </p>
+
+          <div class="flex flex-wrap gap-4">
+            <a
+              href="#menu"
+              class="bg-orange-500 hover:bg-orange-600 px-8 py-4 rounded-2xl font-semibold"
+            >
+              <i class="fas fa-utensils mr-2"></i> Explore Menu
+            </a>
+
+            <a
+              href="https://wa.me/2349058707106?text=Hello%20Tasty%20Haven%2C%20I%20want%20to%20place%20an%20order."
+              target="_blank"
+              rel="noopener noreferrer"
+              class="border-2 border-white hover:bg-white hover:text-black px-8 py-4 rounded-2xl font-semibold"
+            >
+              <i class="fab fa-whatsapp mr-2"></i> WhatsApp
+            </a>
+          </div>
+
+          <div class="flex flex-wrap gap-6 mt-10 text-sm">
+            <span>
+              <i class="fas fa-star text-yellow-400 mr-2"></i>
+              Delicious Nigerian Meals
+            </span>
+
+            <span>
+              <i class="fas fa-map-marker-alt text-orange-400 mr-2"></i>
+              Lagos, Nigeria
+            </span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- MENU -->
+    <section id="menu" class="py-20 bg-white">
+      <div class="max-w-7xl mx-auto px-6">
+        <div class="text-center mb-14">
+          <span
+            class="bg-orange-100 text-orange-600 px-5 py-2 rounded-full text-sm font-semibold"
+          >
+            OUR MENU
+          </span>
+
+          <h2 class="heading-font text-4xl md:text-5xl font-bold mt-5">
+            Our Signature Dishes
+          </h2>
+
+          <p class="text-gray-500 mt-4">
+            Freshly prepared Nigerian meals made with love.
+          </p>
+        </div>
+
+        <div id="menu-grid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+          <!-- JavaScript generates food cards -->
+        </div>
+      </div>
+    </section>
+
+    <!-- GALLERY -->
+    <section id="gallery" class="py-20 bg-gray-100">
+      <div class="max-w-7xl mx-auto px-6">
+        <div class="text-center mb-12">
+          <h2 class="heading-font text-4xl md:text-5xl font-bold">
+            Food Gallery
+          </h2>
+
+          <p class="text-gray-500 mt-3">A taste of Nigeria in every picture.</p>
+        </div>
+
+        <div id="gallery-grid" class="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <!-- JavaScript generates gallery images -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ABOUT -->
+    <section id="about" class="py-20">
+      <div
+        class="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-14 items-center"
+      >
+        <img
+          src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=900&q=85"
+          alt="Restaurant dining space"
+          loading="lazy"
+          class="rounded-3xl shadow-xl w-full h-[400px] object-cover"
+        />
+
+        <div>
+          <span class="text-orange-600 font-semibold">OUR STORY</span>
+
+          <h2
+            class="heading-font text-4xl md:text-5xl font-bold mt-4 leading-tight"
+          >
+            Bringing the Heart of Nigerian Cuisine to Your Table
+          </h2>
+
+          <p class="text-gray-600 mt-6 leading-8">
+            At Tasty Haven, we believe good food brings people together. We
+            celebrate Nigerian culture through delicious traditional recipes,
+            fresh ingredients and unforgettable flavours.
+          </p>
+
+          <div class="grid grid-cols-3 gap-4 mt-10">
+            <div>
+              <h3 class="text-3xl font-bold text-orange-600">Fresh</h3>
+              <p class="text-sm text-gray-500">Ingredients</p>
+            </div>
+
+            <div>
+              <h3 class="text-3xl font-bold text-orange-600">Local</h3>
+              <p class="text-sm text-gray-500">Flavours</p>
+            </div>
+
+            <div>
+              <h3 class="text-3xl font-bold text-orange-600">Daily</h3>
+              <p class="text-sm text-gray-500">Preparation</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section id="contact" class="py-20 bg-orange-50">
+      <div class="max-w-5xl mx-auto px-6 text-center">
+        <span class="text-orange-600 font-semibold">GET IN TOUCH</span>
+
+        <h2 class="heading-font text-4xl md:text-5xl font-bold mt-4">
+          Hungry? Let's Talk!
+        </h2>
+
+        <p class="text-gray-600 mt-5">
+          Have questions or want to place an order? Contact us directly.
+        </p>
+
+        <div class="flex flex-wrap justify-center gap-5 mt-8">
+          <a
+            href="tel:+2349058707106"
+            class="bg-black text-white px-7 py-4 rounded-xl"
+          >
+            <i class="fas fa-phone mr-2"></i> Call Us
+          </a>
+
+          <a
+            href="https://wa.me/2349058707106"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="bg-green-500 hover:bg-green-600 text-white px-7 py-4 rounded-xl"
+          >
+            <i class="fab fa-whatsapp mr-2"></i> WhatsApp Us
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- CART OVERLAY -->
+    <div
+      id="cart-overlay"
+      onclick="toggleCart()"
+      class="fixed inset-0 bg-black/50 z-40 hidden"
+    ></div>
+
+    <!-- CART SIDEBAR -->
+    <aside
+      id="cart-sidebar"
+      class="cart-sidebar fixed top-0 right-0 h-full w-full sm:w-[420px] bg-white shadow-2xl z-50 translate-x-full flex flex-col"
+    >
+      <div class="p-6 border-b flex justify-between items-center">
+        <h2 class="text-2xl font-bold">Your Cart</h2>
+
+        <button
+          onclick="toggleCart()"
+          class="text-3xl text-gray-500"
+          aria-label="Close cart"
+        >
+          &times;
+        </button>
+      </div>
+
+      <div id="cart-items" class="p-6 flex-1 overflow-y-auto"></div>
+
+      <div class="p-6 border-t">
+        <div class="flex justify-between text-lg font-bold mb-5">
+          <span>Total</span>
+          <span id="cart-total" class="text-orange-600">₦0</span>
+        </div>
+
+        <button
+          onclick="sendOrderToWhatsApp()"
+          class="w-full bg-green-500 hover:bg-green-600 text-white py-4 rounded-xl font-bold"
+        >
+          <i class="fab fa-whatsapp mr-2"></i>
+          ORDER VIA WHATSAPP
+        </button>
+
+        <button onclick="clearCart()" class="w-full text-red-500 py-3 mt-2">
+          Clear Cart
+        </button>
+      </div>
+    </aside>
+
+    <!-- IMAGE PREVIEW MODAL -->
+    <div
+      id="image-modal"
+      class="fixed inset-0 z-[100] hidden items-center justify-center bg-black/90 p-4"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Food image preview"
+    >
+      <button
+        id="close-image-modal"
+        class="absolute top-5 right-6 text-white text-5xl hover:text-orange-400"
+        aria-label="Close image preview"
+      >
+        &times;
+      </button>
+
+      <div class="flex flex-col items-center max-w-5xl w-full">
+        <img
+          id="preview-image"
+          src=""
+          alt=""
+          class="max-w-full rounded-xl object-contain shadow-2xl"
+        />
+
+        <p
+          id="preview-caption"
+          class="text-white text-center mt-4 font-semibold text-lg"
+        ></p>
+      </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="bg-black text-white py-16">
+      <div class="max-w-7xl mx-auto px-6">
+        <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-10">
+          <div>
+            <h2 class="heading-font text-3xl font-bold text-orange-500 mb-5">
+              Tasty Haven
+            </h2>
+
+            <p class="text-gray-400">
+              Authentic Nigerian cuisine prepared with love.
+            </p>
+          </div>
+
+          <div>
+            <h3 class="text-orange-400 font-semibold mb-5">Quick Links</h3>
+
+            <div class="flex flex-col gap-3 text-gray-400">
+              <a href="#home" class="hover:text-white">Home</a>
+              <a href="#menu" class="hover:text-white">Menu</a>
+              <a href="#gallery" class="hover:text-white">Gallery</a>
+              <a href="#about" class="hover:text-white">About</a>
+            </div>
+          </div>
+
+          <div>
+            <h3 class="text-orange-400 font-semibold mb-5">Contact Us</h3>
+
+            <div class="text-gray-400 space-y-3">
+              <p>
+                <i class="fas fa-map-marker-alt mr-2"></i>
+                Lagos, Nigeria
+              </p>
+
+              <p>
+                <i class="fas fa-phone mr-2"></i>
+                +234 905 870 7106
+              </p>
+
+              <a
+                href="https://wa.me/2349058707106"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="block hover:text-green-400"
+              >
+                <i class="fab fa-whatsapp mr-2"></i>
+                WhatsApp
+              </a>
+            </div>
+          </div>
+
+          <div>
+            <h3 class="text-orange-400 font-semibold mb-5">Opening Hours</h3>
+            <p class="text-gray-400">Monday - Sunday</p>
+            <p class="text-gray-400 mt-2">10:00 AM - 10:00 PM</p>
+          </div>
+        </div>
+
+        <div
+          class="border-t border-gray-800 mt-14 pt-8 text-center text-gray-500 text-sm"
+        >
+          &copy; 2026 Tasty Haven Restaurant. All rights reserved.
+        </div>
+      </div>
+    </footer>
+
+    <!-- JAVASCRIPT -->
+    <script>
+      // WhatsApp number
+      const WHATSAPP_NUMBER = "2349058707106";
+
+      // Nigerian food menu
+      const menuItems = [
+        {
+          id: 1,
+          name: "Nigerian Jollof Rice",
+          price: 3500,
+          desc: "Authentic smoky Nigerian party jollof rice with chicken and plantain.",
+          img: "https://i.pinimg.com/originals/0f/a4/f8/0fa4f8b434a177e2138cdee8a9304fca.jpg",
+        },
+        {
+          id: 2,
+          name: "Egusi Soup & Pounded Yam",
+          price: 5000,
+          desc: "Traditional melon seed soup with assorted meat and smooth pounded yam.",
+          img: "https://www.peppera.app/generated/landing/recipe-egusi-pounded-yam.webp",
+        },
+        {
+          id: 3,
+          name: "Beef Suya",
+          price: 2800,
+          desc: "Spicy Nigerian grilled beef suya with onions, tomatoes and yaji seasoning.",
+          img: "https://www.dishgen.com/_next/image?q=75&url=https%3A%2F%2Fupcdn.io%2FW142hmp%2Fraw%2Fuploads%2F2025%2F08%2F05%2Fai-generated-1754400082942.png&w=828",
+        },
+        {
+          id: 4,
+          name: "Goat Meat Pepper Soup",
+          price: 4500,
+          desc: "Traditional Nigerian spicy goat meat pepper soup.",
+          img: "https://universal-grill.com/assets/img/hero/Universal_grill_goat_peppersoup.png",
+        },
+        {
+          id: 5,
+          name: "Nigerian Moi Moi",
+          price: 1500,
+          desc: "Steamed bean pudding prepared with peppers and traditional spices.",
+          img: "https://cdn.foodandmeal.com/wp-content/uploads/2023/10/12.4-1.jpg?lossy=1&ssl=1&strip=all",
+        },
+        {
+          id: 6,
+          name: "Nigerian Fried Rice & Chicken",
+          price: 4200,
+          desc: "Nigerian vegetable fried rice served with grilled chicken.",
+          img: "https://glovo.dhmedia.io/image/stores-glovo/stores/9f4f2ef666c59e161788adfb874aba3e1e3c14fb73c9619ee584920dc9d70750?t=W3siYXV0byI6eyJxIjoibG93In19LHsicmVzaXplIjp7Im1vZGUiOiJmaXQiLCJ3aWR0aCI6MTI4MCwiaGVpZ2h0IjoxMjB9fV0%3D",
+        },
+      ];
+
+      let cart = [];
+
+      const money = (amount) => "₦" + amount.toLocaleString("en-NG");
+
+      // Populate food menu
+      function populateMenu() {
+        const container = document.getElementById("menu-grid");
+
+        container.innerHTML = menuItems
+          .map(
+            (item) => `
+              <article class="food-card bg-white rounded-3xl overflow-hidden border border-gray-100 shadow-sm">
+
+                <img
+                  src="${item.img}"
+                  alt="${item.name}"
+                  loading="lazy"
+                  class="food-image w-full h-60 object-cover"
+                >
+
+                <div class="p-6">
+                  <div class="flex justify-between items-start gap-3">
+                    <h3 class="font-bold text-xl">${item.name}</h3>
+
+                    <span class="font-bold text-orange-600 whitespace-nowrap">
+                      ${money(item.price)}
+                    </span>
+                  </div>
+
+                  <p class="text-sm text-gray-500 mt-3 leading-6">
+                    ${item.desc}
+                  </p>
+
+                  <button
+                    onclick="addToCart(${item.id})"
+                    class="mt-6 w-full bg-black text-white py-3 rounded-xl hover:bg-orange-500 transition"
+                  >
+                    <i class="fas fa-plus mr-2"></i>
+                    Add to Cart
+                  </button>
+                </div>
+
+              </article>
+            `,
+          )
+          .join("");
+      }
+
+      // Populate gallery
+      function populateGallery() {
+        const container = document.getElementById("gallery-grid");
+
+        container.innerHTML = menuItems
+          .map(
+            (item) => `
+              <div class="overflow-hidden rounded-2xl">
+                <img
+                  src="${item.img}"
+                  alt="${item.name}"
+                  loading="lazy"
+                  class="food-image w-full h-48 md:h-64 object-cover hover:scale-110 transition duration-500"
+                >
+              </div>
+            `,
+          )
+          .join("");
+      }
+
+      // Add food to cart
+      function addToCart(id) {
+        const item = menuItems.find((food) => food.id === id);
+
+        if (!item) return;
+
+        const existing = cart.find((food) => food.id === id);
+
+        if (existing) {
+          existing.quantity++;
+        } else {
+          cart.push({ ...item, quantity: 1 });
+        }
+
+        updateCartCount();
+        renderCart();
+        showToast(item.name + " added to cart!");
+      }
+
+      // Update cart badge
+      function updateCartCount() {
+        const count = cart.reduce((sum, item) => sum + item.quantity, 0);
+        document.getElementById("cart-count").textContent = count;
+      }
+
+      // Render cart
+      function renderCart() {
+        const container = document.getElementById("cart-items");
+
+        if (cart.length === 0) {
+          container.innerHTML = `
+            <div class="text-center py-20 text-gray-400">
+              <i class="fas fa-shopping-cart text-5xl mb-5"></i>
+              <p class="text-lg">Your cart is empty.</p>
+
+              <button
+                onclick="toggleCart()"
+                class="text-orange-600 mt-4 font-semibold"
+              >
+                Continue Shopping
+              </button>
+            </div>
+          `;
+
+          document.getElementById("cart-total").textContent = money(0);
+          return;
+        }
+
+        container.innerHTML = cart
+          .map(
+            (item, index) => `
+              <div class="flex gap-4 border-b pb-5 mb-5">
+
+                <img
+                  src="${item.img}"
+                  alt="${item.name}"
+                  class="w-20 h-20 object-cover rounded-xl"
+                >
+
+                <div class="flex-1 min-w-0">
+                  <div class="flex justify-between gap-2">
+                    <h4 class="font-semibold">${item.name}</h4>
+
+                    <span class="font-bold text-orange-600 whitespace-nowrap">
+                      ${money(item.price * item.quantity)}
+                    </span>
+                  </div>
+
+                  <p class="text-xs text-gray-500 mt-1">
+                    ${money(item.price)} each
+                  </p>
+
+                  <div class="flex items-center gap-3 mt-3">
+                    <button
+                      onclick="changeQuantity(${index}, -1)"
+                      class="border rounded-full w-8 h-8"
+                    >-</button>
+
+                    <span class="font-semibold">${item.quantity}</span>
+
+                    <button
+                      onclick="changeQuantity(${index}, 1)"
+                      class="border rounded-full w-8 h-8"
+                    >+</button>
+
+                    <button
+                      onclick="removeFromCart(${index})"
+                      class="text-red-500 text-sm ml-auto"
+                    >
+                      Remove
+                    </button>
+                  </div>
+                </div>
+              </div>
+            `,
+          )
+          .join("");
+
+        const total = cart.reduce(
+          (sum, item) => sum + item.price * item.quantity,
+          0,
+        );
+
+        document.getElementById("cart-total").textContent = money(total);
+      }
+
+      // Change quantity
+      function changeQuantity(index, change) {
+        if (!cart[index]) return;
+
+        cart[index].quantity += change;
+
+        if (cart[index].quantity <= 0) {
+          cart.splice(index, 1);
+        }
+
+        updateCartCount();
+        renderCart();
+      }
+
+      // Remove item
+      function removeFromCart(index) {
+        if (!cart[index]) return;
+
+        cart.splice(index, 1);
+        updateCartCount();
+        renderCart();
+
+        showToast("Item removed from cart");
+      }
+
+      // Clear cart
+      function clearCart() {
+        if (cart.length === 0) return;
+
+        if (confirm("Are you sure you want to clear your cart?")) {
+          cart = [];
+          updateCartCount();
+          renderCart();
+        }
+      }
+
+      // Open and close cart
+      function toggleCart() {
+        const sidebar = document.getElementById("cart-sidebar");
+        const overlay = document.getElementById("cart-overlay");
+
+        const isOpen = !sidebar.classList.contains("translate-x-full");
+
+        sidebar.classList.toggle("translate-x-full");
+        overlay.classList.toggle("hidden");
+        document.body.classList.toggle("cart-open");
+
+        if (!isOpen) {
+          renderCart();
+        }
+      }
+
+      // Send order to WhatsApp
+      function sendOrderToWhatsApp() {
+        if (cart.length === 0) {
+          alert("Your cart is empty. Please add food first.");
+          return;
+        }
+
+        let total = 0;
+
+        let message = "Hello Tasty Haven! 🍲\n\n";
+        message += "I would like to place an order:\n\n";
+
+        cart.forEach((item) => {
+          const itemTotal = item.price * item.quantity;
+          total += itemTotal;
+
+          message += `${item.quantity} x ${item.name} - ${money(itemTotal)}\n`;
+        });
+
+        message += `\nTOTAL: ${money(total)}\n\n`;
+        message += "Please confirm my order. Thank you!";
+
+        const whatsappURL = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
+
+        window.open(whatsappURL, "_blank", "noopener,noreferrer");
+      }
+
+      // Toast notification
+      function showToast(message) {
+        const oldToast = document.querySelector(".toast");
+
+        if (oldToast) oldToast.remove();
+
+        const toast = document.createElement("div");
+
+        toast.className =
+          "toast fixed bottom-6 left-1/2 bg-black text-white px-6 py-4 rounded-full shadow-xl z-[110] text-sm";
+
+        toast.textContent = message;
+
+        document.body.appendChild(toast);
+
+        setTimeout(() => toast.remove(), 2500);
+      }
+
+      // ==============================
+      // MOBILE NAVIGATION (HAMBURGER)
+      // ==============================
+      (function () {
+        const menuToggle = document.getElementById("menu-toggle");
+        const mobileMenu = document.getElementById("mobile-menu");
+        if (!menuToggle || !mobileMenu) return;
+
+        let isOpen = false;
+        let openedAt = 0;
+        let scrollYWhenOpened = 0;
+
+        function setMenu(open) {
+          isOpen = open;
+          mobileMenu.classList.toggle("menu-open", open);
+          menuToggle.setAttribute("aria-expanded", String(open));
+          menuToggle.setAttribute(
+            "aria-label",
+            open ? "Close navigation" : "Open navigation",
+          );
+
+          const icon = menuToggle.querySelector("i");
+          if (icon) icon.className = open ? "fas fa-times" : "fas fa-bars";
+
+          if (open) {
+            openedAt = Date.now();
+            scrollYWhenOpened = window.scrollY;
+          }
+        }
+
+        // Tap the hamburger to open / close
+        menuToggle.addEventListener("click", (event) => {
+          event.preventDefault();
+          event.stopPropagation();
+          setMenu(!isOpen);
+        });
+
+        // Tap anywhere outside to close
+        document.addEventListener("pointerdown", (event) => {
+          if (!isOpen) return;
+          if (Date.now() - openedAt < 400) return;
+          if (menuToggle.contains(event.target)) return;
+          if (mobileMenu.contains(event.target)) return;
+          setMenu(false);
+        });
+
+        // Close when the page scrolls
+        window.addEventListener(
+          "scroll",
+          () => {
+            if (!isOpen) return;
+            if (Date.now() - openedAt < 400) return;
+            if (Math.abs(window.scrollY - scrollYWhenOpened) > 20) {
+              setMenu(false);
+            }
+          },
+          { passive: true },
+        );
+
+        // Close after choosing a link
+        mobileMenu.querySelectorAll("a").forEach((link) => {
+          link.addEventListener("click", () => setMenu(false));
+        });
+
+        // Close with Escape
+        document.addEventListener("keydown", (event) => {
+          if (event.key === "Escape") setMenu(false);
+        });
+
+        // Close if the screen grows to desktop size
+        window.addEventListener("resize", () => {
+          if (window.innerWidth >= 768) setMenu(false);
+        });
+      })();
+
+      // IMAGE PREVIEW
+      const imageModal = document.getElementById("image-modal");
+      const previewImage = document.getElementById("preview-image");
+      const previewCaption = document.getElementById("preview-caption");
+      const closeImageButton = document.getElementById("close-image-modal");
+
+      // Open an image when clicked
+      document.addEventListener("click", (event) => {
+        const clickedImage = event.target.closest(".food-image");
+
+        if (!clickedImage) return;
+
+        previewImage.src = clickedImage.currentSrc || clickedImage.src;
+        previewImage.alt = clickedImage.alt;
+        previewCaption.textContent = clickedImage.alt;
+
+        imageModal.classList.remove("hidden");
+        imageModal.classList.add("flex");
+
+        document.body.style.overflow = "hidden";
+      });
+
+      // Close image preview
+      function closeImagePreview() {
+        imageModal.classList.add("hidden");
+        imageModal.classList.remove("flex");
+
+        previewImage.src = "";
+        previewCaption.textContent = "";
+
+        document.body.style.overflow = "";
+      }
+
+      // Close using the X button
+      closeImageButton.addEventListener("click", closeImagePreview);
+
+      // Close when clicking the dark background
+      imageModal.addEventListener("click", (event) => {
+        if (event.target === imageModal) {
+          closeImagePreview();
+        }
+      });
+
+      // Close image with Escape
+      document.addEventListener("keydown", (event) => {
+        if (
+          event.key === "Escape" &&
+          !imageModal.classList.contains("hidden")
+        ) {
+          closeImagePreview();
+        }
+      });
+
+      // INITIALIZE WEBSITE
+      document.addEventListener("DOMContentLoaded", () => {
+        populateMenu();
+        populateGallery();
+        updateCartCount();
+        renderCart();
+      });
+    </script>
+  </body>
+</html>
